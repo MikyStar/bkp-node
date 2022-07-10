@@ -11,7 +11,7 @@
 	"author": "Mike AUBENAS",
 	"license": "MIT",
 	"bin": {
-		"task": "./bin/cli.js"
+		"bkp": "./bin/cli.js"
 	},
 	"files": [
 		"src",
@@ -23,14 +23,19 @@
 		"url": "https://github.com/MikyStar/bkp-node"
 	},
 	"scripts": {
+		"dev": "nodemon",
 		"start": "NODE_ENV=dev npm run build && node build/Main.js",
+
 		"build": "webpack-cli",
 		"make-binary": "./scripts/make-binary.sh",
 		"prepublishOnly": "npm run make-binary",
+
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+
 		"dependencies:check": "ncu -e 2",
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
+
 		"clear": "rm -rf node_modules build bin"
 	},
 	"devDependencies": {
