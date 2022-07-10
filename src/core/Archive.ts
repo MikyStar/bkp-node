@@ -1,4 +1,5 @@
 import compressing from 'compressing'
+import { CompressError, ExtractError } from '../errors/ArchiveErrors'
 
 import { ArchiveAlgo } from "./ArgHandler"
 import { System } from "./System"
@@ -23,10 +24,16 @@ export class Archive
 			await compressing[this.algo].compressFile(this.srcPath, this.destPath)
 		}
 		catch (e) {
-			console.error(e)
+			throw new CompressError(e)
 		}
 	}
 
-	extract = async () =>
-	{}
+	extract = async () => {
+		try {
+			await compressing[this.algo].uncompress(this.srcPath, this.destPath)
+		}
+		catch (e) {
+			throw new ExtractError(e)
+		}
+	}
 }

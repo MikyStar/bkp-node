@@ -13,14 +13,20 @@ import { Archive } from './core/Archive';
 const app = async () => {
 	try {
 		const { action, sourcePath, destPath, archiveAlgo } = new ArgHandler()
+		const archive = new Archive(sourcePath, destPath, archiveAlgo)
 
 		console.log(action, sourcePath, destPath, archiveAlgo)
 
 		switch(action) {
 			case Action.CREATE: {
-				const archive = new Archive(sourcePath, destPath, archiveAlgo)
-
 				await archive.compress()
+				printMessage(`Archive '${sourcePath}' compressed at '${destPath}'`)
+
+				break;
+			}
+			case Action.EXTRACT: {
+				await archive.extract()
+				printMessage(`Archive '${sourcePath}' extracted at '${destPath}'`)
 
 				break;
 			}

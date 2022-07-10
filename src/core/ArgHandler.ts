@@ -15,7 +15,6 @@ export enum Action {
 export enum ArchiveAlgo {
 	TAR = 'tar',
 	TGZ = 'tgz',
-	GZIP = 'gzip',
 	ZIP = 'zip'
 }
 
@@ -28,10 +27,19 @@ export enum ValueFlag {
 	ENCRYPTION_ALGO = '-e',
 }
 
+interface ArgOccurance
+{
+	arg: string
+	index: number
+}
+
+export const DEFAULT_ARCHIVE_ALGO: ArchiveAlgo = ArchiveAlgo.TGZ
+
 //////////////////// ////////////////////
 
 export class ArgHandler {
 	private args: string[]
+
 	action: Action
 
 	sourcePath: string
@@ -43,11 +51,13 @@ export class ArgHandler {
 	constructor() {
 		this.args = process.argv.slice( 2 )
 
+		// Value flags should be handled before positional args
+		this.setArchiveAlgo()
+		this.setEncryptionAlgo()
+
 		this.setAction(this.args[0])
 		this.setSource(this.args[1])
 		this.setDest(this.args[2])
-		this.setArchiveAlgo()
-		this.setEncryptionAlgo()
 	}
 
 	private setAction = (arg: string) => {
@@ -84,7 +94,7 @@ export class ArgHandler {
 		if(arg && !Object.values(ArchiveAlgo).includes(arg as ArchiveAlgo))
 			throw new UnsuportedArchiveAlgo(arg)
 
-		const algo = arg as ArchiveAlgo || ArchiveAlgo.TAR
+		const algo = arg as ArchiveAlgo || DEFAULT_ARCHIVE_ALGO
 
 		this.archiveAlgo = algo
 	}
@@ -103,11 +113,50 @@ export class ArgHandler {
 	////////////////////
 
 	private searchValueFlag = (flag: ValueFlag): string => {
-		const index = this.args.findIndex(arg => arg === flag)
+		let tempFlagIndex = undefined // To get the next arg after the flag
+		const occurances = this.extractOccurances((arg, index) => {
+			if(tempFlagIndex) {
+				tempFlagIndex = undefined
+				return true
+			}
 
-		if(index === -1 )
+			if(arg === flag) {
+				tempFlagIndex = index
+				return true
+			}
+
+			return false
+		})
+
+		if( occurances === undefined )
 			return undefined
 
-		return this.args[ index +1 ]
+		const lastValue = occurances[ occurances.length - 1]
+
+		return lastValue.arg
+	}
+
+	/**
+	 * Find occurances in input order with their position that math the callback,
+	 * returns them and delete them from the untreatedArgs array
+	 * If none find, returns undefined
+	 */
+	private extractOccurances = (callback : (arg: string, index ?: number) => boolean ): ArgOccurance[] | undefined =>
+	{
+		const occurances: ArgOccurance[] = []
+
+		this.args.forEach((arg, index) => {
+			if(callback(arg, index))
+				occurances.push({ arg, index })
+		})
+
+		if( occurances.length === 0 )
+			return undefined
+
+		/** @see: https://www.codegrepper.com/code-examples/javascript/array+splice+in+for+loop+javascript */
+		for (let i = occurances.length - 1; i >= 0; i--)
+			this.args.splice(occurances[ i ].index, 1);
+
+		return occurances
 	}
 }

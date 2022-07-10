@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action, ArchiveAlgo, EncryptionAlgo } from "../core/ArgHandler"
+import { Action, ArchiveAlgo, DEFAULT_ARCHIVE_ALGO, EncryptionAlgo } from "../core/ArgHandler"
 
 ////////////////////////////////////////
 
@@ -65,7 +65,7 @@ class Help implements ManEntries
 			[
 				`<source path> : Absolute or relative path to what you want to backup`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your backup file`,
-				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}`,
+				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}, default '${DEFAULT_ARCHIVE_ALGO}'`,
 				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
 			]
 		}
@@ -78,7 +78,7 @@ class Help implements ManEntries
 			[
 				`<source path> : Absolute or relative path to your backup location`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your clear content`,
-				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}`,
+				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}, default '${DEFAULT_ARCHIVE_ALGO}'`,
 				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
 			]
 		}
