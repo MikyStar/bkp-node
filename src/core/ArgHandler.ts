@@ -1,4 +1,5 @@
 import { FirstArgError } from "../errors/CLISyntaxErrors"
+import { FileAlreadyExistsError, FileNotFoundError } from "../errors/FileErrors"
 import Help from "./Help"
 import { printError, printMessage } from "./Printer"
 import { System } from "./System"
@@ -20,9 +21,9 @@ export class ArgHandler {
 	constructor() {
 		const args = process.argv.slice( 2 )
 
-		this.action = this.setAction(args[0])
-		this.sourcePath = args[1]
-		this.destPath = args[2] || `${this.sourcePath}.${this.action === Action.CREATE ? 'enc' : 'dec'}`
+		this.setAction(args[0])
+		this.setSource(args[1])
+		this.setDest(args[2])
 	}
 
 	private setAction = (arg: string) => {
@@ -30,10 +31,26 @@ export class ArgHandler {
 		const allowedExtract = ['extract', Action.EXTRACT]
 
 		if(allowedCreate.includes(arg))
-			return Action.CREATE
+			this.action =  Action.CREATE
 		else if(allowedExtract.includes(arg))
-			return Action.EXTRACT
+			this.action =  Action.EXTRACT
 		else
 			throw new FirstArgError(arg)
+	}
+
+	private setSource = (arg: string) => {
+		if( !System.doesFileExists(arg) )
+			throw new FileNotFoundError(arg)
+
+		this.sourcePath = arg
+	}
+
+	private setDest = (arg: string) => {
+		const path = arg || `${this.sourcePath}.${this.action === Action.CREATE ? 'enc' : 'dec'}`
+
+		if( System.doesFileExists(path) )
+			throw new FileAlreadyExistsError(path)
+
+		this.destPath = path
 	}
 }
