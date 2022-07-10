@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { FileTypeError } from '../errors/FileErrors'
 
 ////////////////////////////////////////
 
@@ -16,4 +17,17 @@ export namespace System
 			: path.join( process.cwd(), filePath )
 
 	export const doesFileExists = ( path: string ) : boolean => fs.existsSync( getAbsolutePath( path ) ) || false
+
+	export const isDirectory = ( path: string ) : boolean => {
+		const absPath = getAbsolutePath(path)
+		const { isDirectory, isFile } = fs.lstatSync(absPath)
+
+		if( isDirectory() )
+			return true
+
+		if( isFile() )
+			return false
+
+		throw new FileTypeError(path)
+	}
 }

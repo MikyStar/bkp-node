@@ -1,19 +1,30 @@
 import { System } from './core/System'
 
-import { ArgHandler } from "./core/ArgHandler";
+import { Action, ArgHandler } from "./core/ArgHandler";
 import Help from './core/Help';
 import { printMessage, printError } from './core/Printer';
 
 import { CatchableError } from "./errors/CatchableError";
 import { CLISyntaxError } from './errors/CLISyntaxErrors';
+import { Archive } from './core/Archive';
 
 ////////////////////////////////////////
 
-try
-	{
-		const { action, sourcePath, destPath } = new ArgHandler()
+const app = async () => {
+	try {
+		const { action, sourcePath, destPath, archiveAlgo } = new ArgHandler()
 
-		console.log(action, sourcePath, destPath)
+		console.log(action, sourcePath, destPath, archiveAlgo)
+
+		switch(action) {
+			case Action.CREATE: {
+				const archive = new Archive(sourcePath, destPath, archiveAlgo)
+
+				await archive.compress()
+
+				break;
+			}
+		}
 	}
 	catch( error )
 	{
@@ -34,3 +45,6 @@ try
 
 		System.exit( -1 )
 	}
+}
+
+app()

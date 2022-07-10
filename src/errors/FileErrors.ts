@@ -25,3 +25,11 @@ export class SaveFileError extends CatchableError
 		super( `Problem saving ${ fullPath } `, error )
 	}
 }
+
+export class FileTypeError extends CatchableError
+{
+	constructor( fullPath: string, error ?: any )
+	{
+		super( `Path '${fullPath}' should reference a file or directory`, error )
+	}
+}
