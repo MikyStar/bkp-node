@@ -1,5 +1,6 @@
+import { FirstArgError } from "../errors/CLISyntaxErrors"
 import Help from "./Help"
-import { printError } from "./Printer"
+import { printError, printMessage } from "./Printer"
 import { System } from "./System"
 
 //////////////////// ////////////////////
@@ -32,12 +33,7 @@ export class ArgHandler {
 			return Action.CREATE
 		else if(allowedExtract.includes(arg))
 			return Action.EXTRACT
-		else {
-			console.error(`Argument ${arg} unrecognized`)
-			printError( Help.fullMan() )
-			System.exit(-1)
-
-			throw new Error()
-		}
+		else
+			throw new FirstArgError(arg)
 	}
 }

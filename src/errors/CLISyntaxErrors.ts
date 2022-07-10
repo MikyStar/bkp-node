@@ -24,9 +24,9 @@ export class CLISyntaxError extends CatchableError
 
 export class FirstArgError extends CLISyntaxError
 {
-	constructor( message: string, details ?: any )
+	constructor( arg: string, details ?: any )
 	{
-		super( message, ['create', 'extract'], details )
+		super( `First argument '${arg}' unrecognized`, ['create', 'extract'], details )
 	}
 }
 

@@ -1,13 +1,11 @@
 import chalk, {  } from 'chalk'
 
-type Color = 'red' | undefined
+type Color = 'red'
 
 export const printMessage = ( message : string | string[], chalkColor ?: Color ) =>
 {
 	if( ( message === '' ) || ( message === [] ) )
 		return
-
-console.log(chalkColor)
 
 	message = Array.isArray( message ) ? message : [ message ]
 

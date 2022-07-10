@@ -11,7 +11,6 @@ import { CLISyntaxError } from './errors/CLISyntaxErrors';
 
 try
 	{
-		console.log( 'hey')
 		const { action, sourcePath, destPath } = new ArgHandler()
 
 		console.log(action, sourcePath, destPath)
@@ -27,12 +26,11 @@ try
 
 				printError( message )
 
-				manEntries.forEach(entry => printMessage( Help.getMan( entry ) ))
+				manEntries.forEach(entry => printMessage( [ '', ...Help.getMan( entry )] ))
 			}
 			else
 				printError( error.message )
 		}
-			console.warn( error )
 
 		System.exit( -1 )
 	}
