@@ -6,21 +6,38 @@
 	"main": "dist/index.js",
 	"module": "dist/bkp.esm.js",
 	"typings": "dist/index.d.ts",
-	"files": [
-		"dist",
-		"src"
-	],
-	"engines": {
-		"node": ">=10"
-	},
 	"scripts": {
 		"start": "tsdx watch",
-		"build": "tsdx build",
+
 		"test": "tsdx test",
 		"lint": "tsdx lint",
+
+		"build": "tsdx build",
+		"make-binary": "./scripts/make-binary.sh",
+		"prepublishOnly": "npm run make-binary",
 		"prepare": "tsdx build",
+
+		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
+		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+
+		"dependencies:check": "ncu -e 2",
+		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
+
 		"size": "size-limit",
-		"analyze": "size-limit --why"
+		"analyze": "size-limit --why",
+
+		"clear": "rm -rf node_modules dist bin"
+	},
+	"files": [
+		"dist",
+		"src",
+		"bin/cli.js"
+	],
+	"bin": {
+		"bkp": "./bin/cli.js"
+	},
+	"engines": {
+		"node": ">=10"
 	},
 	"peerDependencies": {},
 	"husky": {
