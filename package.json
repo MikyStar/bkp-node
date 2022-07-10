@@ -1,72 +1,53 @@
 {
-	"version": "1.0.0",
-	"license": "MIT",
 	"name": "bkp",
-	"author": "AUBENAS Mike",
-	"main": "dist/index.js",
-	"module": "dist/bkp.esm.js",
-	"typings": "dist/index.d.ts",
-	"scripts": {
-		"start": "tsdx watch",
-
-		"test": "tsdx test",
-		"lint": "tsdx lint",
-
-		"build": "tsdx build",
-		"make-binary": "./scripts/make-binary.sh",
-		"prepublishOnly": "npm run make-binary",
-		"prepare": "tsdx build",
-
-		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
-		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
-
-		"dependencies:check": "ncu -e 2",
-		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
-
-		"size": "size-limit",
-		"analyze": "size-limit --why",
-
-		"clear": "rm -rf node_modules dist bin"
+	"version": "1.0.0",
+	"description": "A CLI tool to handle encrypted compressed backups of files or directory",
+	"keywords": [
+		"backup",
+		"archive",
+		"encrypt",
+		"cli"
+	],
+	"author": "Mike AUBENAS",
+	"license": "MIT",
+	"bin": {
+		"task": "./bin/cli.js"
 	},
 	"files": [
-		"dist",
 		"src",
 		"bin/cli.js"
 	],
-	"bin": {
-		"bkp": "./bin/cli.js"
+	"main": "src/Main.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MikyStar/bkp-node"
 	},
-	"engines": {
-		"node": ">=10"
+	"scripts": {
+		"start": "NODE_ENV=dev npm run build && node build/Main.js",
+		"build": "webpack-cli",
+		"make-binary": "./scripts/make-binary.sh",
+		"prepublishOnly": "npm run make-binary",
+		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
+		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+		"dependencies:check": "ncu -e 2",
+		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
+		"clear": "rm -rf node_modules build bin"
 	},
-	"peerDependencies": {},
-	"husky": {
-		"hooks": {
-			"pre-commit": "tsdx lint"
-		}
-	},
-	"prettier": {
-		"printWidth": 80,
-		"semi": true,
-		"singleQuote": true,
-		"trailingComma": "es5"
-	},
-	"size-limit": [
-		{
-			"path": "dist/bkp.cjs.production.min.js",
-			"limit": "10 KB"
-		},
-		{
-			"path": "dist/bkp.esm.js",
-			"limit": "10 KB"
-		}
-	],
 	"devDependencies": {
-		"@size-limit/preset-small-lib": "^7.0.8",
-		"husky": "^8.0.1",
-		"size-limit": "^7.0.8",
-		"tsdx": "^0.14.1",
-		"tslib": "^2.4.0",
-		"typescript": "^4.7.4"
+		"tslint": "^5.20.1",
+		"typescript": "^4.6.3"
+	},
+	"dependencies": {
+		"@types/jest": "^28.1.4",
+		"@types/node": "^18.0.3",
+		"@types/prompts": "^2.0.14",
+		"chalk": "^4.1.2",
+		"dotenv": "^16.0.0",
+		"jest": "^28.1.2",
+		"ts-loader": "^9.2.9",
+		"ts-node": "^10.7.0",
+		"webpack": "^5.72.0",
+		"webpack-cli": "^4.9.2",
+		"webpack-node-externals": "^3.0.0"
 	}
 }
