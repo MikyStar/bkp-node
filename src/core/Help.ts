@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action } from "../core/ArgHandler"
+import { Action, ArchiveAlgo, EncryptionAlgo } from "../core/ArgHandler"
 
 ////////////////////////////////////////
 
@@ -60,22 +60,26 @@ class Help implements ManEntries
 		this.create =
 		{
 			title: 'Create a compressed, encrypted backup',
-			prototype: 'bkp <c|create> <source path> [<destination path>]',
+			prototype: 'bkp <c|create> <source path> [<destination path>] [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to what you want to backup`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your backup file`,
+				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}`,
+				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
 			]
 		}
 
 		this.extract =
 		{
 			title: 'Extract the content of a backup',
-			prototype: 'bkp <x|extract> <source path> [<destination path>]',
+			prototype: 'bkp <x|extract> <source path> [<destination path>]  [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to your backup location`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your clear content`,
+				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}`,
+				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
 			]
 		}
 	}
