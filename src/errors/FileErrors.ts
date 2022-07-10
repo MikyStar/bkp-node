@@ -6,7 +6,7 @@ export class FileNotFoundError extends CatchableError
 {
 	constructor( fullPath: string, error ?: any )
 	{
-		super( `Can't find ${ fullPath }`, error )
+		super( `File '${ fullPath }' can't be found`, error )
 	}
 }
 

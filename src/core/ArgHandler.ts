@@ -1,8 +1,9 @@
-import { FirstArgError } from "../errors/CLISyntaxErrors"
-import { FileAlreadyExistsError, FileNotFoundError } from "../errors/FileErrors"
-import Help from "./Help"
-import { printError, printMessage } from "./Printer"
 import { System } from "./System"
+
+import { UnsuportedArchiveAlgo } from "../errors/ArchiveErrors"
+import { FirstArgError } from "../errors/CLISyntaxErrors"
+import { UnsuportedEncryptionAlgo } from "../errors/EncryptionErrors"
+import { FileAlreadyExistsError, FileNotFoundError } from "../errors/FileErrors"
 
 //////////////////// ////////////////////
 
@@ -11,19 +12,42 @@ export enum Action {
 	EXTRACT = 'x'
 }
 
+export enum ArchiveAlgo {
+	TAR = 'tar',
+	TGZ = 'tgz',
+	GZIP = 'gzip',
+	ZIP = 'zip'
+}
+
+export enum EncryptionAlgo {
+	SOMETHING = 'todo',
+}
+
+export enum ValueFlag {
+	ARCHIVE_ALGO = '-a',
+	ENCRYPTION_ALGO = '-e',
+}
+
 //////////////////// ////////////////////
 
 export class ArgHandler {
+	private args: string[]
 	action: Action
+
 	sourcePath: string
 	destPath: string
 
-	constructor() {
-		const args = process.argv.slice( 2 )
+	archiveAlgo: ArchiveAlgo
+	encryptionAlgo: EncryptionAlgo
 
-		this.setAction(args[0])
-		this.setSource(args[1])
-		this.setDest(args[2])
+	constructor() {
+		this.args = process.argv.slice( 2 )
+
+		this.setAction(this.args[0])
+		this.setSource(this.args[1])
+		this.setDest(this.args[2])
+		this.setArchiveAlgo()
+		this.setEncryptionAlgo()
 	}
 
 	private setAction = (arg: string) => {
@@ -52,5 +76,38 @@ export class ArgHandler {
 			throw new FileAlreadyExistsError(path)
 
 		this.destPath = path
+	}
+
+	private setArchiveAlgo = () => {
+		const arg = this.searchValueFlag(ValueFlag.ARCHIVE_ALGO)
+
+		if(arg && !Object.values(ArchiveAlgo).includes(arg as ArchiveAlgo))
+			throw new UnsuportedArchiveAlgo(arg)
+
+		const algo = arg as ArchiveAlgo || ArchiveAlgo.TAR
+
+		this.archiveAlgo = algo
+	}
+
+	private setEncryptionAlgo = () => {
+		const arg = this.searchValueFlag(ValueFlag.ENCRYPTION_ALGO)
+
+		if(arg && !Object.values(EncryptionAlgo).includes(arg as EncryptionAlgo))
+			throw new UnsuportedEncryptionAlgo(arg)
+
+		const algo = arg as EncryptionAlgo || EncryptionAlgo.SOMETHING
+
+		this.encryptionAlgo = algo
+	}
+
+	////////////////////
+
+	private searchValueFlag = (flag: ValueFlag): string => {
+		const index = this.args.findIndex(arg => arg === flag)
+
+		if(index === -1 )
+			return undefined
+
+		return this.args[ index +1 ]
 	}
 }
