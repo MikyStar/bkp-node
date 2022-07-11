@@ -25,4 +25,4 @@ jobs:
           version: 6.0.2
 
       - name: Install deps and build (with cache)
-        uses: pnpm install
+        run: pnpm install
