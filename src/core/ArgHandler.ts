@@ -17,7 +17,8 @@ export const ENCRYPTION_ALGO = 'aes-256-cbc'
 
 
 export enum Flag {
-	HELP = '--help'
+	HELP = '--help',
+	VERSION = '--version',
 }
 
 interface ArgOccurance
@@ -37,12 +38,19 @@ export class ArgHandler {
 	destPath: string
 
 	isHelpNeeded: boolean
+	isVersion: boolean
 
 	constructor() {
 		this.args = process.argv.slice( 2 )
 
 		// Flags should be handled before positional args
+		this.isVersion = this.searchFlag([ '-v', Flag.VERSION ])
 		this.isHelpNeeded = this.searchFlag([ '-h', Flag.HELP ])
+
+		if(this.isVersion) {
+			printMessage(Help.version)
+			System.exit(0)
+		}
 
 		if(this.isHelpNeeded || this.args[0] === undefined) {
 			printMessage(Help.fullMan())
