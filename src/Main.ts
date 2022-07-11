@@ -18,8 +18,6 @@ const app = async () => {
 
 		const TEMP_FILE = '.archive.temp'
 
-		console.log(action, sourcePath, destPath)
-
 		switch(action) {
 			case Action.CREATE: {
 				printMessage('Compression ...')
