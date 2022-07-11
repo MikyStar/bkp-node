@@ -1,6 +1,6 @@
 {
 	"name": "bkp-node",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A CLI tool to handle encrypted compressed backups of files or directory",
 	"keywords": [
 		"backup",
