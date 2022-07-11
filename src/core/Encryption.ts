@@ -19,24 +19,19 @@ const SALT = 'useless salt'
 
 export namespace Encryption
 {
-	export const encrypt = async ({ sourcePath, destPath, algo, password }: Args) => {
+	export const encrypt = async ({ sourcePath, destPath, algo, password }: Args): Promise<string> => {
 		return new Promise((resolve, reject) => {
 			const input = fs.createReadStream(sourcePath);
 			const output = fs.createWriteStream(destPath);
 
 			const key = crypto.scryptSync(password, SALT, 32);
-			const initializationVector = Buffer.alloc(16, 0);
+			const initializationVector = crypto.randomBytes(16)
 
 			const cipher = crypto.createCipheriv(algo, key, initializationVector);
 
 			input.pipe(cipher).pipe(output);
 
-			output.on('finish', () => {
-				printMessage("Here is your initialization vector, you must store it as it is required to decrypt\n", 'red')
-				printMessage(initializationVector.toString('hex'), 'green')
-
-				resolve(true);
-			});
+			output.on('finish', () => resolve(initializationVector.toString('hex')));
 
 			output.on('error', () => reject(new EncryptError()) );
 		})

@@ -30,9 +30,11 @@ const app = async () => {
 				printMessage('')
 
 				printMessage('Encryption ...')
-				await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath,
+				const iv = await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath,
 					algo: encryptionAlgo, password: FAKE_PASSWORD })
 				printMessage('done')
+				printMessage('Here is your initialization vector, you must store it as it is required to decrypt', 'red')
+				printMessage([ '', iv, '' ])
 
 				break;
 			}
