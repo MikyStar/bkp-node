@@ -9,7 +9,7 @@
 # Variables
 
 buildCommand="pnpm build"
-buildedFile="/dist/bkp.cjs.production.min.js"
+buildedFile="build/main.js"
 binary="bin/cli.js"
 
 
