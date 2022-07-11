@@ -6,7 +6,7 @@ import { System } from "./System"
 
 ////////////////////////////////////////
 
-export interface Args {
+interface Args {
 	sourcePath: string
 	destPath: string
 

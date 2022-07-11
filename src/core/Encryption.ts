@@ -1,11 +1,12 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import { DecryptError, EncryptError } from '../errors/EncryptionErrors';
-import { ArchiveAlgo, EncryptionAlgo } from "./ArgHandler"
+import { EncryptionAlgo } from "./ArgHandler"
+import { printMessage } from './Printer';
 
 ////////////////////////////////////////
 
-export interface Args {
+interface Args {
 	sourcePath: string
 	destPath: string
 
@@ -14,29 +15,47 @@ export interface Args {
 	password: string
 }
 
+const SALT = 'useless salt'
+
 export namespace Encryption
 {
 	export const encrypt = async ({ sourcePath, destPath, algo, password }: Args) => {
-		const cipher = crypto.createCipher('aes-256-cbc', password);
-		const input = fs.createReadStream(sourcePath);
-		const output = fs.createWriteStream(destPath);
+		return new Promise((resolve, reject) => {
+			const input = fs.createReadStream(sourcePath);
+			const output = fs.createWriteStream(destPath);
 
-		input.pipe(cipher).pipe(output);
+			const key = crypto.scryptSync(password, SALT, 32);
+			const initializationVector = Buffer.alloc(16, 0);
 
-		output.on('finish', () => { return; });
+			const cipher = crypto.createCipheriv(algo, key, initializationVector);
 
-		output.on('error', () => { throw new EncryptError() });
+			input.pipe(cipher).pipe(output);
+
+			output.on('finish', () => {
+				printMessage("Here is your initialization vector, you must store it as it is required to decrypt\n", 'red')
+				printMessage(initializationVector.toString('hex'), 'green')
+
+				resolve(true);
+			});
+
+			output.on('error', () => reject(new EncryptError()) );
+		})
 	}
 
-	export const decrypt = async ({ sourcePath, destPath, algo, password }: Args) => {
-		const cipher = crypto.createDecipher('aes-256-cbc', password);
-		const input = fs.createReadStream(sourcePath);
-		const output = fs.createWriteStream(destPath);
+	export const decrypt = async ({ sourcePath, destPath, algo, password, initializationVector }: Args & { initializationVector: string }) => {
+		return new Promise((resolve, reject) => {
+			const input = fs.createReadStream(sourcePath);
+			const output = fs.createWriteStream(destPath);
 
-		input.pipe(cipher).pipe(output);
+			const key = crypto.scryptSync(password, SALT, 32);
 
-		output.on('finish', () => { return; });
+			const cipher = crypto.createDecipheriv(algo, key, initializationVector);
 
-		output.on('error', () => { throw new DecryptError() });
+			input.pipe(cipher).pipe(output);
+
+			output.on('finish', () => resolve(true));
+
+			output.on('error', () => reject(new DecryptError()) );
+		})
 	}
 }

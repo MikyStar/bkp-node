@@ -16,9 +16,10 @@ const app = async () => {
 		const { action, sourcePath, destPath, archiveAlgo, encryptionAlgo } = new ArgHandler()
 
 		const FAKE_PASSWORD = 'yhuhujij,"xb'
+		const FAKE_IV = '0000'
 		const TEMP_FILE = '.archive.temp'
 
-		console.log(action, sourcePath, destPath, archiveAlgo)
+		console.log(action, sourcePath, destPath, archiveAlgo, encryptionAlgo)
 
 		switch(action) {
 			case Action.CREATE: {
@@ -29,14 +30,16 @@ const app = async () => {
 				printMessage('')
 
 				printMessage('Encryption ...')
-				await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath, algo: encryptionAlgo, password: FAKE_PASSWORD })
+				await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath,
+					algo: encryptionAlgo, password: FAKE_PASSWORD })
 				printMessage('done')
 
 				break;
 			}
 			case Action.EXTRACT: {
 				printMessage('Decryption ...')
-				await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE, algo: encryptionAlgo, password: FAKE_PASSWORD })
+				await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE,
+					algo: encryptionAlgo, password: FAKE_PASSWORD, initializationVector: FAKE_IV })
 				printMessage('done')
 
 				printMessage('Extraction ...')
