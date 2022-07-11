@@ -1,7 +1,7 @@
 import compressing from 'compressing'
 import { CompressError, ExtractError } from '../errors/ArchiveErrors'
+import { ARCHIVE_ALGO } from './ArgHandler'
 
-import { ArchiveAlgo } from "./ArgHandler"
 import { System } from "./System"
 
 ////////////////////////////////////////
@@ -9,18 +9,16 @@ import { System } from "./System"
 interface Args {
 	sourcePath: string
 	destPath: string
-
-	algo: ArchiveAlgo
 }
 
 export namespace Archive
 {
-	export const compress = async ({ sourcePath, destPath, algo }: Args) => {
+	export const compress = async ({ sourcePath, destPath }: Args) => {
 		try {
 			if ( System.isDirectory(sourcePath) )
-				await compressing[algo].compressDir(sourcePath, destPath)
+				await compressing[ARCHIVE_ALGO].compressDir(sourcePath, destPath)
 			else
-				await compressing[algo].compressFile(sourcePath, destPath)
+				await compressing[ARCHIVE_ALGO].compressFile(sourcePath, destPath)
 		}
 		catch (e) {
 			console.log(e)
@@ -28,9 +26,9 @@ export namespace Archive
 		}
 	}
 
-	export const extract = async ({ sourcePath, destPath, algo }: Args) => {
+	export const extract = async ({ sourcePath, destPath }: Args) => {
 		try {
-			await compressing[algo].uncompress(sourcePath, destPath)
+			await compressing[ARCHIVE_ALGO].uncompress(sourcePath, destPath)
 		}
 		catch (e) {
 			throw new ExtractError(e)
