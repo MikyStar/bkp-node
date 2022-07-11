@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action, ARCHIVE_ALGO, ENCRYPTION_ALGO } from "../core/ArgHandler"
+import { Action } from "../core/ArgHandler"
 
 ////////////////////////////////////////
 
@@ -24,6 +24,9 @@ export interface ManEntries
 
 type ManEntryKey = keyof ManEntries
 
+export const DEFAULT_CREATE_EXTENSION = '.bkp'
+export const DEFAULT_EXTRACT_EXTENSION = '.dec'
+
 ////////////////////////////////////////
 
 /**
@@ -31,6 +34,7 @@ type ManEntryKey = keyof ManEntries
  */
 class Help implements ManEntries
 {
+	private header: string[]
 	private footer: string[]
 
 	version: string[]
@@ -43,6 +47,16 @@ class Help implements ManEntries
 	constructor()
 	{
 		const { bold } = chalk
+
+		this.header =
+		[
+			'',
+			`Create and extract backups of a file or directory compressed with ${chalk.bold('tgz')} and encrypted`,
+			`with ${chalk.bold('aes-256-cbc')} with both your password and a generated initialization vector`,
+			'',
+			'-----',
+			'',
+		]
 
 		this.footer =
 		[
@@ -59,12 +73,13 @@ class Help implements ManEntries
 
 		this.create =
 		{
-			title: `Create a compressed, encrypted backup (archive: ${ARCHIVE_ALGO}, encryption: ${ENCRYPTION_ALGO})`,
+			title: `Create a compressed, encrypted backup`,
 			prototype: 'bkp <c|create> <source path> [<destination path>] [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to what you want to backup`,
-				`[<destination path>] : Optional, absolute or relative path to where you want your backup file`,
+				'[<destination path>] : Optional, absolute or relative path to where you want your',
+				`                       backup file ${chalk.bold(`default: '${DEFAULT_CREATE_EXTENSION}'`)}`,
 			],
 			furtherDescription:
 			[
@@ -75,12 +90,14 @@ class Help implements ManEntries
 
 		this.extract =
 		{
-			title: `Extract the content of a backup (archive: ${ARCHIVE_ALGO}, encryption: ${ENCRYPTION_ALGO})`,
+			title: `Extract the content of a backup`,
 			prototype: 'bkp <x|extract> <source path> [<destination path>]  [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to your backup location`,
-				`[<destination path>] : Optional, absolute or relative path to where you want your clear content`,
+				'[<destination path>] : Optional, absolute or relative path to where you want your clear content,',
+				"                       if you have used the default '.bkp' extension it will be trimmed, otherwise it will append ",
+				`                       the ${chalk.bold(`prefix: '${DEFAULT_EXTRACT_EXTENSION}'`)}`,
 			],
 			furtherDescription:
 			[
@@ -103,10 +120,11 @@ class Help implements ManEntries
 		entries.forEach( entry =>
 		{
 			const man = this.makeMan({ ...this[ entry ], footer: false })
-			toReturn = [ ...toReturn, ...man, '', '-----' ]
+			toReturn = [ ...toReturn, ...man, '', '-----', '' ]
 		});
 
 		return	[
+					...this.header,
 					...toReturn,
 					...this.footer
 				]
