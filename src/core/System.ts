@@ -30,4 +30,10 @@ export namespace System {
 
 		throw new FileTypeError(path);
 	};
+
+	export const deleteFile = (path: string) => {
+		const absPath = getAbsolutePath(path);
+
+		fs.rmSync(absPath)
+	}
 }

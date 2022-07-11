@@ -51,7 +51,8 @@ const app = async () => {
 				break;
 			}
 		}
-		// TODO delete temp file
+
+		System.deleteFile(TEMP_FILE)
 
 		System.exit( 0 )
 	}
