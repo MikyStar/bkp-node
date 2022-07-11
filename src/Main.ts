@@ -16,8 +16,6 @@ const app = async () => {
 	try {
 		const { action, sourcePath, destPath } = new ArgHandler()
 
-		const FAKE_PASSWORD = 'yhuhujij,"xb'
-		const FAKE_IV = '0000'
 		const TEMP_FILE = '.archive.temp'
 
 		console.log(action, sourcePath, destPath)

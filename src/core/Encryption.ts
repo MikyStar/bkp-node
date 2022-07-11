@@ -40,8 +40,9 @@ export namespace Encryption
 			const output = fs.createWriteStream(destPath);
 
 			const key = crypto.scryptSync(password, SALT, 32);
+			const iv = Buffer.from(initializationVector, 'hex')
 
-			const cipher = crypto.createDecipheriv(ENCRYPTION_ALGO, key, initializationVector);
+			const cipher = crypto.createDecipheriv(ENCRYPTION_ALGO, key, iv);
 
 			input.pipe(cipher).pipe(output);
 
