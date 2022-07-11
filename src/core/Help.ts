@@ -74,7 +74,7 @@ class Help implements ManEntries
 		this.create =
 		{
 			title: `Create a compressed, encrypted backup`,
-			prototype: 'bkp <c|create> <source path> [<destination path>] [<archive algorithm>] [<encryption algorithm>]',
+			prototype: 'bkp <c|create> <source path> [<destination path>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to what you want to backup`,
@@ -91,7 +91,7 @@ class Help implements ManEntries
 		this.extract =
 		{
 			title: `Extract the content of a backup`,
-			prototype: 'bkp <x|extract> <source path> [<destination path>]  [<archive algorithm>] [<encryption algorithm>]',
+			prototype: 'bkp <x|extract> <source path> [<destination path>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to your backup location`,
