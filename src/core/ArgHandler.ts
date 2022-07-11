@@ -19,7 +19,7 @@ export enum ArchiveAlgo {
 }
 
 export enum EncryptionAlgo {
-	SOMETHING = 'todo',
+	AES = 'aes-256-cbc',
 }
 
 export enum ValueFlag {
@@ -34,6 +34,7 @@ interface ArgOccurance
 }
 
 export const DEFAULT_ARCHIVE_ALGO: ArchiveAlgo = ArchiveAlgo.TGZ
+export const DEFAULT_ENCRYPTION_ALGO: EncryptionAlgo = EncryptionAlgo.AES
 
 //////////////////// ////////////////////
 
@@ -105,7 +106,7 @@ export class ArgHandler {
 		if(arg && !Object.values(EncryptionAlgo).includes(arg as EncryptionAlgo))
 			throw new UnsuportedEncryptionAlgo(arg)
 
-		const algo = arg as EncryptionAlgo || EncryptionAlgo.SOMETHING
+		const algo = arg as EncryptionAlgo || DEFAULT_ENCRYPTION_ALGO
 
 		this.encryptionAlgo = algo
 	}

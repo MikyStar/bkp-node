@@ -7,30 +7,48 @@ import { printMessage, printError } from './core/Printer';
 import { CatchableError } from "./errors/CatchableError";
 import { CLISyntaxError } from './errors/CLISyntaxErrors';
 import { Archive } from './core/Archive';
+import { Encryption } from './core/Encryption';
 
 ////////////////////////////////////////
 
 const app = async () => {
 	try {
-		const { action, sourcePath, destPath, archiveAlgo } = new ArgHandler()
-		const archive = new Archive(sourcePath, destPath, archiveAlgo)
+		const { action, sourcePath, destPath, archiveAlgo, encryptionAlgo } = new ArgHandler()
+
+		const FAKE_PASSWORD = 'yhuhujij,"xb'
+		const TEMP_FILE = '.archive.temp'
 
 		console.log(action, sourcePath, destPath, archiveAlgo)
 
 		switch(action) {
 			case Action.CREATE: {
-				await archive.compress()
-				printMessage(`Archive '${sourcePath}' compressed at '${destPath}'`)
+				printMessage('Compression ...')
+				await Archive.compress({ sourcePath, destPath: TEMP_FILE, algo: archiveAlgo })
+				printMessage('done')
+
+				printMessage('')
+
+				printMessage('Encryption ...')
+				await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath, algo: encryptionAlgo, password: FAKE_PASSWORD })
+				printMessage('done')
 
 				break;
 			}
 			case Action.EXTRACT: {
-				await archive.extract()
-				printMessage(`Archive '${sourcePath}' extracted at '${destPath}'`)
+				printMessage('Decryption ...')
+				await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE, algo: encryptionAlgo, password: FAKE_PASSWORD })
+				printMessage('done')
+
+				printMessage('Extraction ...')
+				await Archive.extract({ sourcePath: TEMP_FILE, destPath, algo: archiveAlgo })
+				printMessage('done')
 
 				break;
 			}
 		}
+		// TODO delete temp file
+
+		System.exit( 0 )
 	}
 	catch( error )
 	{
@@ -39,9 +57,9 @@ const app = async () => {
 		else {
 			if( error instanceof CLISyntaxError )
 			{
-				const { message, manEntries } = error
+				const { message, manEntries, details } = error
 
-				printError( message )
+				printError([message, details])
 
 				manEntries.forEach(entry => printMessage( [ '', ...Help.getMan( entry )] ))
 			}

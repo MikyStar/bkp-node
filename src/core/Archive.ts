@@ -6,31 +6,31 @@ import { System } from "./System"
 
 ////////////////////////////////////////
 
-export class Archive
-{
-	srcPath: string
+export interface Args {
+	sourcePath: string
 	destPath: string
 
 	algo: ArchiveAlgo
+}
 
-	constructor(srcPath: string, destPath: string, algo: ArchiveAlgo) {
-		this.srcPath = srcPath
-		this.destPath = destPath
-		this.algo = algo
-	}
-
-	compress = async () => {
+export namespace Archive
+{
+	export const compress = async ({ sourcePath, destPath, algo }: Args) => {
 		try {
-			await compressing[this.algo].compressFile(this.srcPath, this.destPath)
+			if ( System.isDirectory(sourcePath) )
+				await compressing[algo].compressDir(sourcePath, destPath)
+			else
+				await compressing[algo].compressFile(sourcePath, destPath)
 		}
 		catch (e) {
+			console.log(e)
 			throw new CompressError(e)
 		}
 	}
 
-	extract = async () => {
+	export const extract = async ({ sourcePath, destPath, algo }: Args) => {
 		try {
-			await compressing[this.algo].uncompress(this.srcPath, this.destPath)
+			await compressing[algo].uncompress(sourcePath, destPath)
 		}
 		catch (e) {
 			throw new ExtractError(e)

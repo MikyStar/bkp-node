@@ -21,11 +21,12 @@ export namespace System {
 
 	export const isDirectory = (path: string): boolean => {
 		const absPath = getAbsolutePath(path);
-		const { isDirectory, isFile } = fs.lstatSync(absPath);
 
-		if (isDirectory()) return true;
+		/** fs.lstatSync(absPath) can not be destructured https://github.com/nodejs/help/issues/3713 */
 
-		if (isFile()) return false;
+		if (fs.lstatSync(absPath).isDirectory()) return true;
+
+		if (fs.lstatSync(absPath).isFile()) return false;
 
 		throw new FileTypeError(path);
 	};
