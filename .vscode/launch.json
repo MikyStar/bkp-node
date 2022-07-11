@@ -11,8 +11,7 @@
 			"runtimeArgs": ["-r", "ts-node/register"],
 			"args": [
 				"${workspaceRoot}/src/Main.ts",
-				"--storage", "${userHome}/.global-tasks.json",
-				"a", "0", "'this should be a subtask'"
+				"c", "src", "temp"
 			],
 			"runtimeExecutable": "/Users/mike/.nvm/versions/node/v14.4.0/bin/node",
 			"skipFiles": [

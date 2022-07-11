@@ -3,8 +3,7 @@ import { System } from "./System"
 import { FirstArgError } from "../errors/CLISyntaxErrors"
 import { FileAlreadyExistsError, FileNotFoundError } from "../errors/FileErrors"
 import { printMessage } from "./Printer"
-import Help, { DEFAULT_CREATE_EXTENSION } from "./Help"
-import { handleExtractExtension } from "../utils"
+import Help, { DEFAULT_CREATE_EXTENSION, DEFAULT_EXTRACT_EXTENSION } from "./Help"
 
 //////////////////// ////////////////////
 
@@ -75,10 +74,22 @@ export class ArgHandler {
 	}
 
 	private setDest = (arg: string) => {
-		const path = arg ||
-			this.action === Action.CREATE
-			? this.sourcePath + DEFAULT_CREATE_EXTENSION
-			: handleExtractExtension(this.sourcePath)
+		let path = ''
+
+		if(this.action === Action.CREATE)
+			path = arg || this.sourcePath + DEFAULT_CREATE_EXTENSION
+		else {
+			if(arg)
+				path = arg
+			else {
+				const regex = new RegExp(`${DEFAULT_CREATE_EXTENSION}$`);
+
+				if (regex.test(this.sourcePath))
+					path = this.sourcePath.split(DEFAULT_CREATE_EXTENSION)[0]
+
+				path = this.sourcePath + DEFAULT_EXTRACT_EXTENSION
+			}
+		}
 
 
 		if( System.doesFileExists(path) )
