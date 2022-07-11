@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action, ArchiveAlgo, DEFAULT_ARCHIVE_ALGO, EncryptionAlgo } from "../core/ArgHandler"
+import { Action, ARCHIVE_ALGO, ENCRYPTION_ALGO } from "../core/ArgHandler"
 
 ////////////////////////////////////////
 
@@ -59,27 +59,33 @@ class Help implements ManEntries
 
 		this.create =
 		{
-			title: 'Create a compressed, encrypted backup',
+			title: `Create a compressed, encrypted backup (archive: ${ARCHIVE_ALGO}, encryption: ${ENCRYPTION_ALGO})`,
 			prototype: 'bkp <c|create> <source path> [<destination path>] [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to what you want to backup`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your backup file`,
-				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}, default '${DEFAULT_ARCHIVE_ALGO}'`,
-				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
+			],
+			furtherDescription:
+			[
+				'It will then prompt you for the password you want to set',
+				`After encryption, a initialization vector will be outputed, ${ chalk.bold.red('you must store it in order to decrypt afterwards') }`
 			]
 		}
 
 		this.extract =
 		{
-			title: 'Extract the content of a backup',
+			title: `Extract the content of a backup (archive: ${ARCHIVE_ALGO}, encryption: ${ENCRYPTION_ALGO})`,
 			prototype: 'bkp <x|extract> <source path> [<destination path>]  [<archive algorithm>] [<encryption algorithm>]',
 			argDef:
 			[
 				`<source path> : Absolute or relative path to your backup location`,
 				`[<destination path>] : Optional, absolute or relative path to where you want your clear content`,
-				`[<archive algorithm>] : Optional, ${Object.values(ArchiveAlgo)}, default '${DEFAULT_ARCHIVE_ALGO}'`,
-				`[<encryption algorithm>] : Optional, ${Object.values(EncryptionAlgo)}`,
+			],
+			furtherDescription:
+			[
+				'It will then prompt you for the password you have set',
+				`Then, you provide the initialization vector that was generated during the backup creation`
 			]
 		}
 	}

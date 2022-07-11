@@ -1,6 +1,6 @@
 import chalk, {  } from 'chalk'
 
-type Color = 'red'
+type Color = 'red' | 'green'
 
 export const printMessage = ( message : string | string[], chalkColor ?: Color ) =>
 {

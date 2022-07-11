@@ -1,36 +1,34 @@
 import compressing from 'compressing'
 import { CompressError, ExtractError } from '../errors/ArchiveErrors'
+import { ARCHIVE_ALGO } from './ArgHandler'
 
-import { ArchiveAlgo } from "./ArgHandler"
 import { System } from "./System"
 
 ////////////////////////////////////////
 
-export class Archive
-{
-	srcPath: string
+interface Args {
+	sourcePath: string
 	destPath: string
+}
 
-	algo: ArchiveAlgo
-
-	constructor(srcPath: string, destPath: string, algo: ArchiveAlgo) {
-		this.srcPath = srcPath
-		this.destPath = destPath
-		this.algo = algo
-	}
-
-	compress = async () => {
+export namespace Archive
+{
+	export const compress = async ({ sourcePath, destPath }: Args) => {
 		try {
-			await compressing[this.algo].compressFile(this.srcPath, this.destPath)
+			if ( System.isDirectory(sourcePath) )
+				await compressing[ARCHIVE_ALGO].compressDir(sourcePath, destPath)
+			else
+				await compressing[ARCHIVE_ALGO].compressFile(sourcePath, destPath)
 		}
 		catch (e) {
+			console.log(e)
 			throw new CompressError(e)
 		}
 	}
 
-	extract = async () => {
+	export const extract = async ({ sourcePath, destPath }: Args) => {
 		try {
-			await compressing[this.algo].uncompress(this.srcPath, this.destPath)
+			await compressing[ARCHIVE_ALGO].uncompress(sourcePath, destPath)
 		}
 		catch (e) {
 			throw new ExtractError(e)

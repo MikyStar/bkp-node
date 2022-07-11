@@ -7,30 +7,54 @@ import { printMessage, printError } from './core/Printer';
 import { CatchableError } from "./errors/CatchableError";
 import { CLISyntaxError } from './errors/CLISyntaxErrors';
 import { Archive } from './core/Archive';
+import { Encryption } from './core/Encryption';
 
 ////////////////////////////////////////
 
 const app = async () => {
 	try {
-		const { action, sourcePath, destPath, archiveAlgo } = new ArgHandler()
-		const archive = new Archive(sourcePath, destPath, archiveAlgo)
+		const { action, sourcePath, destPath } = new ArgHandler()
 
-		console.log(action, sourcePath, destPath, archiveAlgo)
+		const FAKE_PASSWORD = 'yhuhujij,"xb'
+		const FAKE_IV = '0000'
+		const TEMP_FILE = '.archive.temp'
+
+		console.log(action, sourcePath, destPath)
 
 		switch(action) {
 			case Action.CREATE: {
-				await archive.compress()
-				printMessage(`Archive '${sourcePath}' compressed at '${destPath}'`)
+				printMessage('Compression ...')
+				await Archive.compress({ sourcePath, destPath: TEMP_FILE })
+				printMessage('done')
+
+				printMessage('')
+
+				printMessage('Encryption ...')
+				const iv = await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath,
+					password: FAKE_PASSWORD })
+				printMessage('done')
+				printMessage('Here is your initialization vector, you must store it as it is required to decrypt', 'red')
+				printMessage([ '', iv, '' ])
 
 				break;
 			}
 			case Action.EXTRACT: {
-				await archive.extract()
-				printMessage(`Archive '${sourcePath}' extracted at '${destPath}'`)
+				printMessage('Decryption ...')
+				await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE,
+					password: FAKE_PASSWORD, initializationVector: FAKE_IV })
+				printMessage('done')
+
+				printMessage('Extraction ...')
+				await Archive.extract({ sourcePath: TEMP_FILE, destPath })
+				printMessage('done')
 
 				break;
 			}
 		}
+
+		System.deleteFile(TEMP_FILE)
+
+		System.exit( 0 )
 	}
 	catch( error )
 	{
@@ -39,9 +63,9 @@ const app = async () => {
 		else {
 			if( error instanceof CLISyntaxError )
 			{
-				const { message, manEntries } = error
+				const { message, manEntries, details } = error
 
-				printError( message )
+				printError([message, details])
 
 				manEntries.forEach(entry => printMessage( [ '', ...Help.getMan( entry )] ))
 			}
