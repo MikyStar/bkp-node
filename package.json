@@ -25,17 +25,13 @@
 	"scripts": {
 		"dev": "nodemon",
 		"start": "NODE_ENV=dev npm run build && node build/Main.js",
-
 		"build": "webpack-cli",
 		"make-binary": "./scripts/make-binary.sh",
 		"prepublishOnly": "npm run make-binary",
-
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
-
 		"dependencies:check": "ncu -e 2",
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
-
 		"clear": "rm -rf node_modules build bin"
 	},
 	"devDependencies": {
@@ -50,6 +46,7 @@
 		"compressing": "^1.6.0",
 		"dotenv": "^16.0.0",
 		"jest": "^28.1.2",
+		"password-prompt": "^1.1.2",
 		"ts-loader": "^9.2.9",
 		"ts-node": "^10.7.0",
 		"webpack": "^5.72.0",

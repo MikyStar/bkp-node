@@ -8,6 +8,7 @@ import { CatchableError } from "./errors/CatchableError";
 import { CLISyntaxError } from './errors/CLISyntaxErrors';
 import { Archive } from './core/Archive';
 import { Encryption } from './core/Encryption';
+import { secretPrompt } from './core/Prompt';
 
 ////////////////////////////////////////
 
@@ -30,8 +31,9 @@ const app = async () => {
 				printMessage('')
 
 				printMessage('Encryption ...')
+				const password = await secretPrompt('Password: ')
 				const iv = await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath,
-					password: FAKE_PASSWORD })
+					password })
 				printMessage('done')
 				printMessage('Here is your initialization vector, you must store it as it is required to decrypt', 'red')
 				printMessage([ '', iv, '' ])
@@ -40,8 +42,10 @@ const app = async () => {
 			}
 			case Action.EXTRACT: {
 				printMessage('Decryption ...')
+				const password = await secretPrompt('Password: ')
+				const initializationVector = await secretPrompt('Initialization vector: ')
 				await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE,
-					password: FAKE_PASSWORD, initializationVector: FAKE_IV })
+					password, initializationVector })
 				printMessage('done')
 
 				printMessage('Extraction ...')
