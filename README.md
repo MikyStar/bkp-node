@@ -65,7 +65,7 @@ _destination path_ : Optional, absolute or relative path to where you want your 
 
 ```sh
 # Prototype
-bkp <s|sync> <source path> <destination path>
+bkp <s|sync> <source path> <destination path> [--dry-run]
 
 # Examples
 bkp s source.bkp existing-destination.bkp # Sync a backup
@@ -74,6 +74,8 @@ bkp s source.bkp existing-destination.bkp # Sync a backup
 _source path_ : Absolute or relative path to what you want to backup
 
 _destination path_ : Absolute or relative path of the backup you want to sync
+
+_--dry-run_ : Using this flag will not actually run the syncronization but will let you know what changes would be done if you do sync
 
 >It will then prompt you for the password you have set to create the backup
 
