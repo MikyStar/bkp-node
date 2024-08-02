@@ -12,14 +12,12 @@ buildCommand="pnpm build"
 buildedFile="build/main.js"
 binary="bin/cli.js"
 
-
 ########################################
 
 # Functions
 
-prefixShabang ()
-{
-	echo "#!/usr/bin/env node\n" | cat - $binary | tee $binary  &> /dev/null
+prefixShabang () {
+  echo "#!/usr/bin/env node\n" | cat - $binary | tee $binary  &> /dev/null
 }
 
 ########################################
@@ -35,3 +33,4 @@ fi
 
 cp $buildedFile $binary
 prefixShabang
+
