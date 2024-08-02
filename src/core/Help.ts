@@ -6,7 +6,7 @@ import { Action } from "../core/ArgHandler"
 
 ////////////////////////////////////////
 
-interface ManPage
+type ManPage = 
 {
 	title ?: string
 	prototype ?: string
@@ -16,10 +16,11 @@ interface ManPage
 	examples ?: string[]
 }
 
-export interface ManEntries
+export type ManEntries =
 {
 	create: ManPage
 	extract: ManPage
+	sync: ManPage
 }
 
 type ManEntryKey = keyof ManEntries
@@ -41,6 +42,7 @@ class Help implements ManEntries
 
 	create: ManPage;
 	extract: ManPage;
+	sync: ManPage
 
 	////////////////////
 
@@ -77,7 +79,7 @@ class Help implements ManEntries
 			prototype: 'bkp <c|create> <source path> [<destination path>]',
 			argDef:
 			[
-				`<source path> : Absolute or relative path to what you want to backup`,
+				`<source path> : Absolute or relative path of what you want to backup`,
 				'[<destination path>] : Optional, absolute or relative path to where you want your',
 				`                       backup file ${chalk.bold(`default: '${DEFAULT_CREATE_EXTENSION}'`)}`,
 			],
@@ -94,7 +96,7 @@ class Help implements ManEntries
 			prototype: 'bkp <x|extract> <source path> [<destination path>]',
 			argDef:
 			[
-				`<source path> : Absolute or relative path to your backup location`,
+				`<source path> : Absolute or relative path of your backup location`,
 				'[<destination path>] : Optional, absolute or relative path to where you want your clear content,',
 				"                       if you have used the default '.bkp' extension it will be trimmed, otherwise it will append ",
 				`                       the ${chalk.bold(`prefix: '${DEFAULT_EXTRACT_EXTENSION}'`)}`,
@@ -102,6 +104,22 @@ class Help implements ManEntries
 			furtherDescription:
 			[
 				'It will then prompt you for the password you have set',
+				`Then, you provide the initialization vector that was generated during the backup creation`
+			]
+		}
+
+		this.sync =
+		{
+			title: `Syncronize the content of a backup`,
+			prototype: 'bkp <s|sync> <source path> <destination path>',
+			argDef:
+			[
+				`<source path> : Absolute or relative path of your backup location`,
+				'<destination path> : Absolute or relative path of the backup you want to sync',
+			],
+			furtherDescription:
+			[
+				'It will then prompt you for the password you have set to create the backup',
 				`Then, you provide the initialization vector that was generated during the backup creation`
 			]
 		}

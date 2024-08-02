@@ -29,14 +29,13 @@ bkp c myFile # Create a backup named 'myFile.bkp'
 bkp c myFile here # Create a backup named 'here'
 ```
 
-_source path_ : Absolute or relative path to what you want to backup
+_source path_ : Absolute or relative path of what you want to backup
 
 _destination path_ : Optional, absolute or relative path to where you want your backup file, default: **'.bkp'**
 
 >It will then prompt you for the password you want to set
 
 >After encryption, a initialization vector will be outputed, `you must store it in order to decrypt afterwards`
-
 
 ---
 
@@ -52,10 +51,30 @@ bkp x myFile.bkp here # Extract the backup inside 'here'
 bkp x myFile # Extract the backup inside 'myFile.dec'
 ```
 
-_source path_ : Absolute or relative path to your backup location
+_source path_ : Absolute or relative path of your backup location
 
 _destination path_ : Optional, absolute or relative path to where you want your clear content, if you have used the default **'.bkp'** extension it will be trimmed, otherwise it will append the prefix **'.dec'**
 
 >It will then prompt you for the password you have set
+
+>Then, you provide **the initialization vector** that was generated during the backup creation
+
+---
+
+## Syncronize backup with RSync
+
+```sh
+# Prototype
+bkp <s|sync> <source path> <destination path>
+
+# Examples
+bkp s source.bkp existing-destination.bkp # Sync a backup
+```
+
+_source path_ : Absolute or relative path to what you want to backup
+
+_destination path_ : Absolute or relative path of the backup you want to sync
+
+>It will then prompt you for the password you have set to create the backup
 
 >Then, you provide **the initialization vector** that was generated during the backup creation
