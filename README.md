@@ -80,3 +80,9 @@ _--dry-run_ : Using this flag will not actually run the syncronization but will 
 >It will then prompt you for the password you have set to create the backup
 
 >Then, you provide **the initialization vector** that was generated during the backup creation
+
+---
+
+# Tasks
+
+Using [CLI-Manager](https://github.com/MikyStar/CLI-Manager) to handle tasks
