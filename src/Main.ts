@@ -2,7 +2,7 @@ import { System } from './core/System';
 
 import { Action, ArgHandler } from './core/ArgHandler';
 import Help from './core/Help';
-import { printMessage, printError } from './core/Printer';
+import { printError, printMessage } from './core/Printer';
 
 import { CatchableError } from './errors/CatchableError';
 import { CLISyntaxError } from './errors/CLISyntaxErrors';
@@ -28,7 +28,11 @@ const app = async () => {
 
         printMessage('Encryption ...');
         const password = await secretPrompt('Password: ');
-        const iv = await Encryption.encrypt({ sourcePath: TEMP_FILE, destPath, password });
+        const iv = await Encryption.encrypt({
+          sourcePath: TEMP_FILE,
+          destPath,
+          password,
+        });
         printMessage('done');
         printMessage('Here is your initialization vector, you must store it as it is required to decrypt', 'red');
         printMessage(['', iv, '']);
@@ -40,7 +44,12 @@ const app = async () => {
         printMessage('Decryption ...');
         const password = await secretPrompt('Password: ');
         const initializationVector = await secretPrompt('Initialization vector: ');
-        await Encryption.decrypt({ sourcePath, destPath: TEMP_FILE, password, initializationVector });
+        await Encryption.decrypt({
+          sourcePath,
+          destPath: TEMP_FILE,
+          password,
+          initializationVector,
+        });
         printMessage('done');
 
         printMessage('Extraction ...');
